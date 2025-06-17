@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.8.1
+  sdk: ">=2.17.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -28,13 +28,12 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.0               # Gestión de estado
-  firebase_core: ^2.0.0          # Firebase
-  firebase_auth: ^4.0.0          # Autenticación
-  cloud_firestore: ^5.0.0        # Base de datos en la nube
+  firebase_core: ^2.25.4          # Firebase
+  firebase_auth: ^4.17.9          # Autenticación
+  cloud_firestore: ^4.17.5        # Base de datos en la nube
   just_audio: ^0.9.34            # Reproductor de música
   path_provider: ^2.0.11         # Acceso a rutas del sistema
   fl_chart: ^0.63.0              # Gráficos para reportes emocionales
@@ -55,7 +54,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "25259649382",
-    "project_id": "consultorio-psicologia-app",
-    "storage_bucket": "consultorio-psicologia-app.firebasestorage.app"
+    "project_number": "472769013189",
+    "project_id": "grupo-insight-app",
+    "storage_bucket": "grupo-insight-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:25259649382:android:86dada0eaa5d6a2b4bc0a7",
+        "mobilesdk_app_id": "1:472769013189:android:edeb128d4a2f9c40c257ac",
         "android_client_info": {
           "package_name": "com.consultorio.grupoInsight"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAuHZwYSniBbXgpqKkbV7ehQNn5bccQoR0"
+          "current_key": "AIzaSyDqsnVaZMnZSOLxxPiei7BPSoP2bSaxnDo"
         }
       ],
       "services": {
