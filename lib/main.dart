@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       title: 'Consultorio Psicología',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 58, 183, 127)),
         useMaterial3: true,
       ),
 

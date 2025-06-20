@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,80 +10,67 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Controladores de texto para email y contraseña
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String errorMessage = '';
 
-  // Estado para mostrar errores
-  String? _errorMessage;
-  bool _isLoading = false;
-
-  // Método para hacer login
   Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        password: _passwordController.text,
       );
-      // Si se loguea con éxito, no hacemos nada. El estado cambiará y se mostrará otra pantalla.
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     } on FirebaseAuthException catch (e) {
       setState(() {
-        _errorMessage = e.message;
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
+        errorMessage = e.message ?? 'Error desconocido';
       });
     }
   }
 
-  // Construcción del widget
+  Future<void> _register() async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+      setState(() {
+        errorMessage = 'Usuario creado, ahora puedes iniciar sesión.';
+      });
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message ?? 'Error desconocido';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Iniciar Sesión')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Campo de Email
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(labelText: 'Correo electrónico'),
-              keyboardType: TextInputType.emailAddress,
             ),
-
-            // Campo de Contraseña
             TextField(
               controller: _passwordController,
               decoration: const InputDecoration(labelText: 'Contraseña'),
               obscureText: true,
             ),
-
             const SizedBox(height: 20),
-
-            // Botón de Login
-            _isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _login,
-                    child: const Text('Iniciar sesión'),
-                  ),
-
-            // Mostrar error si lo hay
-            if (_errorMessage != null) ...[
+            ElevatedButton(onPressed: _login, child: const Text('Iniciar sesión')),
+            TextButton(onPressed: _register, child: const Text('Registrarse')),
+            if (errorMessage.isNotEmpty) ...[
               const SizedBox(height: 20),
-              Text(
-                _errorMessage!,
-                style: const TextStyle(color: Colors.red),
-              ),
-            ],
+              Text(errorMessage, style: const TextStyle(color: Colors.red)),
+            ]
           ],
         ),
       ),
