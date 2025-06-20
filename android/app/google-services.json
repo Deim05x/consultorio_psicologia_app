@@ -12,7 +12,12 @@
           "package_name": "com.consultorio.grupoInsight"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "472769013189-1he6nuioq02p3ve1rr43kj36um1kanof.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDqsnVaZMnZSOLxxPiei7BPSoP2bSaxnDo"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472769013189-1he6nuioq02p3ve1rr43kj36um1kanof.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
