@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'Screens/login_screen.dart';
-import 'Screens/home_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
-  // Asegura que los plugins de Flutter estén inicializados antes de usar Firebase
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Inicializa Firebase con la configuración generada por flutterfire configure
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  // Inicia la aplicación
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -25,73 +16,88 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Consultorio Psicología',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 58, 183, 127)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-
-      // Verifica si hay un usuario autenticado para decidir qué pantalla mostrar
-      home: FirebaseAuth.instance.currentUser == null
-          ? const LoginScreen() // Si no hay sesión activa
-          : const MyHomePage(title: 'Pantalla Principal'), // Si hay sesión activa
+      home: const LoginScreen(),
     );
   }
 }
 
-// Pantalla principal tras inicio de sesión
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+  Future<UserCredential?> _signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return null;
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-  // Incrementa el contador y actualiza la UI
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      print('Error al iniciar sesión con Google: $e');
+      return null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: const Text('Iniciar Sesión')),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.login),
+          label: const Text('Iniciar sesión con Google'),
+          onPressed: () async {
+            final user = await _signInWithGoogle();
+            if (user != null) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const HomeScreen()),
+              );
+            }
+          },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
 }
 
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
-
-
-
-
-
+  @override
+  Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Inicio'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              await GoogleSignIn().signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: Text('Bienvenido, ${user?.displayName ?? 'Usuario'}'),
+      ),
+    );
+  }
+}
 
 
 

@@ -31,15 +31,15 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.0               # Gestión de estado
-  firebase_core: ^2.25.4          # Firebase
-  firebase_auth: ^4.17.9          # Autenticación
-  cloud_firestore: ^4.17.5        # Base de datos en la nube
-  just_audio: ^0.9.34            # Reproductor de música
+  firebase_core: ^3.14.0          # Firebase
+  firebase_auth: ^5.6.0          # Autenticación
+  cloud_firestore: ^5.6.9        # Base de datos en la nube
+  just_audio: ^0.10.4            # Reproductor de música
   path_provider: ^2.0.11         # Acceso a rutas del sistema
-  fl_chart: ^0.63.0              # Gráficos para reportes emocionales
+  fl_chart: ^1.0.0              # Gráficos para reportes emocionales
   animations: ^2.0.7             # Animaciones suaves
-  lottie: ^2.2.0                 # Animaciones visuales (ejercicios de respiración)
-
+  lottie: ^3.3.1                 # Animaciones visuales (ejercicios de respiración)
+  google_sign_in: ^6.1.4     # Autenticación con Google
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -54,18 +54,23 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
+assets:
+  - assets/images/               # Imágenes de la aplicación
+  - assets/audio/                # Archivos de audio para reproducción
+  - assets/lottie/               # Animaciones Lottie para ejercicios de respiración
+  - assets/google_icon.png          # Icono de Google para autenticación
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
-  uses-material-design: true
+  - uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -97,4 +102,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
 
