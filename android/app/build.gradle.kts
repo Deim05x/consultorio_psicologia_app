@@ -43,11 +43,10 @@ flutter {
     source = "../.."
 }
 
-apply plugin: 'com.google.gms.google-services' // Al final del archivo
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.15.0') // Versión actual
-    implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.firebase:firebase-firestore'
-}   implementation 'com.google.firebase:firebase-analytics'
+    implementation (platform("com.google.firebase:firebase-bom:33.15.0")) // Versión actual
+    implementation ("com.google.firebase:firebase-auth") // Firebase Authentication
+    implementation ("com.google.firebase:firebase-firestore")
+}   implementation ("com.google.firebase:firebase-analytics")
     
