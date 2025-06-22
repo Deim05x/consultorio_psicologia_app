@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+
+import 'routes.dart'; // Archivo donde defines tus rutas
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,90 +19,41 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Consultorio Psicología',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      onGenerateRoute: AppRoutes.generateRoute,
+      home: const AuthCheck(), // 👈 Aquí usamos el widget que decidirá qué pantalla mostrar
     );
   }
 }
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-
-  Future<UserCredential?> _signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return null;
-
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch (e) {
-      print('Error al iniciar sesión con Google: $e');
-      return null;
-    }
-  }
+// Este widget escucha el estado de autenticación y redirige a Login o Home
+class AuthCheck extends StatelessWidget {
+  const AuthCheck({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Iniciar Sesión')),
-      body: Center(
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.login),
-          label: const Text('Iniciar sesión con Google'),
-          onPressed: () async {
-            final user = await _signInWithGoogle();
-            if (user != null) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const HomeScreen()),
-              );
-            }
-          },
-        ),
-      ),
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(), // Escucha si el usuario inicia/cierra sesión
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else if (snapshot.hasData) {
+          // Usuario autenticado
+          return const HomeScreen();
+        } else {
+          // Usuario no autenticado
+          return const LoginScreen();
+        }
+      },
     );
   }
 }
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inicio'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              await GoogleSignIn().signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: Text('Bienvenido, ${user?.displayName ?? 'Usuario'}'),
-      ),
-    );
-  }
-}
-
-
 
 
 
